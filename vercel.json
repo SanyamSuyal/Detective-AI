@@ -1,28 +1,27 @@
 {
   "version": 2,
-  "buildCommand": "./vercel-build.sh",
-  "outputDirectory": "public",
+  "buildCommand": "node vercel-build.js",
   "builds": [
     {
-      "src": "server/vercel.ts",
+      "src": "api/index.ts",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     { 
       "src": "/api/(.*)", 
-      "dest": "/server/vercel.ts" 
+      "dest": "/api/index.ts" 
     },
     { 
       "src": "/uploads/(.*)",
-      "dest": "/server/vercel.ts"
+      "dest": "/api/index.ts"
     },
     {
       "handle": "filesystem"
     },
-    { 
+    {
       "src": "/(.*)",
-      "dest": "/server/vercel.ts"
+      "dest": "/api/index.ts"
     }
   ]
 }

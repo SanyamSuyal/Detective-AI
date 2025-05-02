@@ -1,9 +1,26 @@
-.git
-node_modules
-npm-debug.log
-.env
+# Local development files
+.vite/
+.replit
+.upm/
+.config/
+.cache/
+node_modules/
+
+# Git files
+.git/
+.gitignore
+
+# Environment variables
 .env.local
-.DS_Store
-*.log
-*.swp
-*.swo
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Lock files
+yarn.lock
+package-lock.json
+
+# Vercel specific files that we don't need for our custom setup
+.vercel/
+!.vercel/output/
+.vercel-build-output/

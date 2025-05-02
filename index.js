@@ -1,4 +1,5 @@
-// Root index.js for Vercel deployment
-import app from './api/index.js';
+// This file is for Vercel deployments
+console.log('Starting Detective AI server...');
 
-export default app;
+// This file simply re-exports the API handler
+module.exports = require('./api/index.js');

@@ -1,51 +1,60 @@
-#!/usr/bin/env node
+// Build script for Vercel deployment
+const { execSync } = require('child_process');
+const fs = require('fs');
+const path = require('path');
 
-import { execSync } from 'child_process';
-import path from 'path';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
+console.log('🔨 Starting Vercel build process...');
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Create a dist directory if it doesn't exist
-if (!fs.existsSync('dist')) {
-  fs.mkdirSync('dist');
-}
-
-// Create a public directory inside dist if it doesn't exist
-if (!fs.existsSync('dist/public')) {
-  fs.mkdirSync('dist/public');
-}
-
+// Build the client application
 try {
-  // Build the client (frontend)
-  console.log('Building frontend...');
-  
-  // Use vite build from the root to ensure all path aliases work
-  execSync('npx vite build', { stdio: 'inherit' });
-  
-  // Copy client/dist to dist/public
-  console.log('Copying frontend assets...');
-  // Use fs.cp instead of fs.cpSync for Node.js compatibility
-  fs.cp('client/dist', 'dist/public', { recursive: true }, (err) => {
-    if (err) {
-      console.error('Error copying files:', err);
-      process.exit(1);
-    }
-    
-    // Build the server (backend) with esbuild after copying is complete
-    console.log('Building backend...');
-    try {
-      execSync('npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist', 
-        { stdio: 'inherit' });
-      console.log('Build completed successfully!');
-    } catch (err) {
-      console.error('Backend build failed:', err);
-      process.exit(1);
-    }
-  });
+  console.log('📦 Building client application...');
+  execSync('cd client && npm run build', { stdio: 'inherit' });
+  console.log('✅ Client build completed successfully!');
 } catch (error) {
-  console.error('Build failed:', error);
+  console.error('❌ Client build failed:', error);
   process.exit(1);
 }
+
+// Create public directory for static assets if it doesn't exist
+const publicDir = path.join(process.cwd(), 'public');
+if (!fs.existsSync(publicDir)) {
+  fs.mkdirSync(publicDir, { recursive: true });
+}
+
+// Copy client build to public directory
+try {
+  console.log('📂 Copying client build to public directory...');
+  
+  // Use cp-r equivalent in Node.js
+  const copyRecursive = (src, dest) => {
+    const exists = fs.existsSync(src);
+    const stats = exists && fs.statSync(src);
+    const isDirectory = exists && stats.isDirectory();
+    
+    if (isDirectory) {
+      if (!fs.existsSync(dest)) {
+        fs.mkdirSync(dest, { recursive: true });
+      }
+      fs.readdirSync(src).forEach(childItemName => {
+        copyRecursive(
+          path.join(src, childItemName),
+          path.join(dest, childItemName)
+        );
+      });
+    } else {
+      fs.copyFileSync(src, dest);
+    }
+  };
+  
+  copyRecursive(
+    path.join(process.cwd(), 'client', 'dist'),
+    path.join(publicDir, 'client')
+  );
+  
+  console.log('✅ Client files copied successfully!');
+} catch (error) {
+  console.error('❌ Failed to copy client build:', error);
+  process.exit(1);
+}
+
+console.log('✅ Build process completed successfully!');

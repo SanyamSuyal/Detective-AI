@@ -1,12 +1,16 @@
 #!/bin/bash
 
-# Build the frontend
+# Build the client (frontend)
+echo "Building client..."
+cd client
 npm run build
+cd ..
 
-# Create uploads directory
-mkdir -p uploads
+# Create the public directory if it doesn't exist
+mkdir -p public/client
 
-# Copy client files to static directory
-cp -r client/dist/* dist/
+# Copy the client build to the public directory
+echo "Copying client build to public/client directory..."
+cp -r client/dist/* public/client/
 
 echo "Build completed successfully!"
