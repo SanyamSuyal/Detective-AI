@@ -28,16 +28,31 @@ A mystery-themed Detective AI website where users can submit case details and re
 3. [OpenAI API key](https://platform.openai.com/api-keys)
 4. [Cohere API key](https://dashboard.cohere.com/api-keys)
 
-### Steps to Deploy
+### Steps to Deploy to Vercel
 
 1. Fork or clone this repository to your GitHub account
 2. Sign in to Vercel and click "New Project"
 3. Import your GitHub repository
-4. Configure the following environment variables:
-   - `DATABASE_URL`: Your PostgreSQL connection string
-   - `OPENAI_API_KEY`: Your OpenAI API key
-   - `COHERE_API_KEY`: Your Cohere API key
-5. Deploy the project
+4. In the "Configure Project" step:
+   - Add the following Environment Variables:
+     - `DATABASE_URL`: Your PostgreSQL connection string
+     - `OPENAI_API_KEY`: Your OpenAI API key
+     - `COHERE_API_KEY`: Your Cohere API key
+   - Make sure "Build and Output Settings" are using the defaults
+   - Leave the root directory as `.` (root)
+5. Click "Deploy" and wait for the deployment to complete
+6. Once deployed, your application will be available at a `.vercel.app` domain
+
+### Troubleshooting Vercel Deployment
+
+- If you get a build error, check that all environment variables are set correctly
+- For database connection issues:
+  - Make sure your database allows connections from Vercel's IP ranges
+  - Check that your connection string is correctly formatted
+  - For Neon or other serverless PostgreSQL providers, use the pooled connection string
+- For runtime errors:
+  - Check the Function Logs in the Vercel dashboard
+  - Make sure API keys are valid and have necessary permissions
 
 ### Handling Uploads
 
