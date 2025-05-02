@@ -1,15 +1,28 @@
 {
   "version": 2,
-  "buildCommand": "cd client && npm run build && mkdir -p ../public && cp -r dist/* ../public/",
+  "buildCommand": "./vercel-build.sh",
+  "outputDirectory": "public",
   "builds": [
     {
-      "src": "api/index.ts",
+      "src": "server/vercel.ts",
       "use": "@vercel/node"
     }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/index.ts" },
-    { "src": "/uploads/(.*)", "dest": "/api/index.ts" },
-    { "src": "/(.*)", "dest": "/api/index.ts" }
+    { 
+      "src": "/api/(.*)", 
+      "dest": "/server/vercel.ts" 
+    },
+    { 
+      "src": "/uploads/(.*)",
+      "dest": "/server/vercel.ts"
+    },
+    {
+      "handle": "filesystem"
+    },
+    { 
+      "src": "/(.*)",
+      "dest": "/server/vercel.ts"
+    }
   ]
 }
